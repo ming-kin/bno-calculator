@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Check Dates</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( ".datepicker" ).datepicker({
+      dateFormat: 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true
+    });
+
+    // function to add a new absence period
+    $( "#add" ).click(function() {
+      $( "#absences" ).append('<div class="absence"><input type="text" name="absence_from[]" class="datepicker"><input type="text" name="absence_to[]" class="datepicker"><button type="button" class="remove">Remove</button></div>');
+      $( ".datepicker" ).datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        changeYear: true
+      });
+    });
+
+    // function to remove an absence period
+    $( "#absences" ).on('click', '.remove', function() {
+      $(this).parent().remove();
+    });
+
+    // Validate form before submission
+    $("form").submit(function(event) {
+      var isValid = true;
+      $(".datepicker").each(function() {
+        if (!$(this).val()) {
+          isValid = false;
+        }
+      });
+      if (!isValid) {
+        event.preventDefault();
+        alert("Please fill in all date fields before submitting.");
+      }
+    });
+  });
+  </script>
+</head>
+<body>
+<form method="POST" action="/check_dates">
+    Start Date: <input type="text" name="start" class="datepicker"><br>
+    End Date: <input type="text" name="end" class="datepicker"><br>
+    <div id="absences">
+        <div class="absence">
+            Absence From: <input type="text" name="absence_from[]" class="datepicker">
+            Absence To: <input type="text" name="absence_to[]" class="datepicker">
+            <button type="button" class="remove">Remove</button>
+        </div>
+    </div>
+    <button type="button" id="add">Add Absence</button>
+    <input type="submit" value="Check Dates">
+</form>
+</body>
+</html>
